@@ -21,6 +21,8 @@ public class Drivetrain extends Subsystem {
      *
      * @param leftSpeed
      * @param rightSpeed
+     * 
+     * Author: Waweru and James
      */
     public void drive(double leftSpeed, double rightSpeed) {
         /*

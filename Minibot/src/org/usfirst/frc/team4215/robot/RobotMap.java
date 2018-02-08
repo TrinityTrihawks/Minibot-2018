@@ -16,4 +16,15 @@ public class RobotMap {
 	// number and the module. For example you with a rangefinder:
 	// public static int rangefinderPort = 1;
 	// public static int rangefinderModule = 1;
+	
+	public final static int victorWheel_backright = 1;
+	public final static int victorWheel_frontright = 0;
+	public final static int victorWheel_backleft = 3;
+	public final static int victorWheel_frontleft = 2;
+	public final static int driveStick = 0; 
+	public final static int numberOfWheels = 4;
+
+	
+	public final static double wheelCircumference = 18.875; // Essentially 6*pi, however the C is a little larger in reality
+
 }

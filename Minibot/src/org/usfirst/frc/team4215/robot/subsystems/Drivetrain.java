@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4215.robot.subsystems;
 
 import org.usfirst.frc.team4215.robot.RobotMap;
+import org.usfirst.frc.team4215.robot.commands.TeleopDrive;
 import org.usfirst.frc.team4215.robot.subsystems.Drivetrain.wheelIndex;
 
 import edu.wpi.first.wpilibj.Victor;
@@ -109,7 +110,7 @@ public void Drive(double magnitude, double theta, double rotation, double slider
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new TeleopDrive());
     }
 }
 

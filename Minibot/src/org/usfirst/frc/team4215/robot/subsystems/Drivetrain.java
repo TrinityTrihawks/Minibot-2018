@@ -1,8 +1,15 @@
 package org.usfirst.frc.team4215.robot.subsystems;
 
 import org.usfirst.frc.team4215.robot.RobotMap;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
+import org.usfirst.frc.team4215.robot.RobotMap;
 import org.usfirst.frc.team4215.robot.commands.TeleopDrive;
-import org.usfirst.frc.team4215.robot.subsystems.Drivetrain.wheelIndex;
 
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -15,7 +22,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * Much of the code here is taken from the new 2018 model of code, and therefore is a little clunky but is designed for visibility
  */
 public class Drivetrain extends Subsystem {
-	
+	/*
 	public enum wheelIndex {
 		backrightwheel(RobotMap.victorWheel_backright),
 		frontrightwheel(RobotMap.victorWheel_frontright),
@@ -32,12 +39,12 @@ public class Drivetrain extends Subsystem {
 	}
 	
 
-	/*
+	
 	Victor leftMotor;
     Victor rightMotor;
     Victor rightMotor2;
     Victor leftMotor2;
-    */
+    
 	int numberWheels = RobotMap.numberOfWheels;
 
 	
@@ -54,14 +61,14 @@ public class Drivetrain extends Subsystem {
 	public double [] power = new double [4];
 
     
-    /**
-     * Set Drive train speed Inputs from -1 to 1
+    *//**
+     * Set DriveMecanum train speed Inputs from -1 to 1
      *
      * 
-     */
-public void Drive(double magnitude, double theta, double rotation, double slider_power) {
+     *//*
+public void DriveMecanum(double magnitude, double theta, double rotation, double slider_power) {
 		
-		System.out.println("Enter Drive Train");
+		System.out.println("Enter DriveMecanum Train");
 		
 		magnitude = magnitude * (4096/RobotMap.wheelCircumference);
 		
@@ -81,20 +88,20 @@ public void Drive(double magnitude, double theta, double rotation, double slider
 		
 }
     
-    /**
+    *//**
      * Scaling because Victor does not response to volts less than 4%
      * either direction.
      *
      * @param speed
      * @return scaled speed
-     */
+     *//*
     private static double scaling(double speed) {
         if (speed == 0) return 0d;
         else return Math.signum(speed)
                 * ((Math.abs(speed) * .96) + .04);
     }
     
-    /**
+    *//**
      * You can use this function when left speed and right speed are
      * the same.
      *
@@ -102,15 +109,158 @@ public void Drive(double magnitude, double theta, double rotation, double slider
      * @param speed
      */
     
-    
-    /*public void drive(double speed) {
-        drive(speed, speed);
-    }*/
+//the port numbers of each of the wheels
+	//also used as the index for the wheels array
+	private enum WheelType {
+		
+		backrightwheel(RobotMap.talonWheel_backright),
+		frontrightwheel(RobotMap.talonWheel_frontright),
+		backleftwheel(RobotMap.talonWheel_backleft),
+		frontleftwheel(RobotMap.talonWheel_frontleft); 
+		
+		private int wheelId;
+		private TalonSRX wheel;
+		private WheelType (int id) {
+			this.wheelId = id;
+			this.wheel = new TalonSRX(this.wheelId);			
+		}
+		
+		public int getId() {
+			return this.wheelId;
+		}
+		public TalonSRX getWheel() {
+			return this.wheel;
+		}
+	}
+		
+	public Drivetrain() {
+				
+		WheelType.frontleftwheel.getWheel().setInverted(true);
+		WheelType.frontrightwheel.getWheel().setInverted(true);		
+	}
 	
+	/**
+	 * Dives the robot
+	 * @param magnitude
+	 * @param theta
+	 * @param rotation
+	 * @param slider_power
+	 */
+	
+	public void DriveMecanum(double magnitude, double theta, double rotation, double slider_power) {
+		
+		//System.out.println("Enter DriveMecanum Train");
+		rotation *= -.5;
+		if (magnitude <= .08 && magnitude >= -.08) {
+			theta = 0;
+			magnitude = 0;
+		}
+		
+		//not sure what this is supposed to be 
+		//if (theta <= Math.PI/30 && theta >= -Math.PI/30)
+				
+		//rotation = 0;
+		double xPower = magnitude * Math.sin(-theta - Math.PI / 4);
+		double yPower = magnitude * Math.cos(-theta - Math.PI / 4);
+	
+		//takes values from above doubles and corresponds them with each wheel 		
+		WheelType.backrightwheel.getWheel().set(ControlMode.PercentOutput, xPower - rotation);
+		WheelType.frontrightwheel.getWheel().set(ControlMode.PercentOutput, yPower + rotation);
+		WheelType.backleftwheel.getWheel().set(ControlMode.PercentOutput, yPower - rotation);
+		WheelType.frontleftwheel.getWheel().set(ControlMode.PercentOutput, xPower + rotation);
+		
+	}
+	
+	public void DriveTank(double magnitudeLeft, double magnitudeRight) {
+		//double magnitude = Math.abs(magnitudeLeft) + Math.abs(magnitudeRight);  // TODO: Make this less questionable
+		if (Math.abs(magnitudeLeft) <= .08 && Math.abs(magnitudeRight) <= .08) {
+			magnitudeLeft = 0;
+			magnitudeRight = 0;
+		}
+		
+		// TODO: Add equalization between magnitudes when close together
+		
+		WheelType.backrightwheel.getWheel().set(ControlMode.PercentOutput, magnitudeRight);
+		WheelType.frontrightwheel.getWheel().set(ControlMode.PercentOutput, magnitudeRight);
+		WheelType.frontleftwheel.getWheel().set(ControlMode.PercentOutput, magnitudeLeft);
+		WheelType.backleftwheel.getWheel().set(ControlMode.PercentOutput, magnitudeLeft);
+		
+	}
 
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        setDefaultCommand(new TeleopDrive());
-    }
-}
+	public void Stop() {
+		DriveMecanum(0,0,0,0);
+	}
+	double deaccel;
+	double velocity;
+	
+	public void brake(double time, double displacement) {
+		velocity =  WheelType.backrightwheel.getWheel().getSelectedSensorVelocity(WheelType.backrightwheel.getId());
+		deaccel = ((displacement-velocity*time-getDistance())/Math.pow(time, 2));
+		DriveMecanum(Math.abs(deaccel), Math.PI, 0, 1);	
+	}
+	
+	public void setRampRate(int rate) {
+		for (WheelType w : WheelType.values()) { 
+			w.getWheel().configOpenloopRamp(rate, 0);
+		}
+	}	
 
+	public void initDefaultCommand() {
+		// Set the default command for a subsystem here.
+		setDefaultCommand(new TeleopDrive());
+	}
+	
+	public void resetDistance()
+	{
+		for (WheelType w : WheelType.values()) { 
+			w.getWheel().getSensorCollection().setQuadraturePosition(0, 0);
+		}
+		return;
+	}
+
+	public double getDistance()
+	{
+		int ticks = Math.abs(WheelType.frontleftwheel.getWheel().getSensorCollection().getQuadraturePosition());
+		// convert encoder ticks
+		double distance = ticks/4096 * RobotMap.wheelCircumference;
+		return distance;
+	}
+
+	//
+	// logging functions
+	//
+	/*public void logTalonBusVoltages() {
+		for (WheelType w : WheelType.values()) {
+			SmartDashboard.putNumber("Wheel Voltage  ( " + w.toString() + " )   :", w.getWheel().getBusVoltage());
+		}
+	}*/
+
+	public void logTalonMotorOutputPercent() {
+		for (WheelType w : WheelType.values()) {
+			SmartDashboard.putNumber("Wheel Power  ( " + w.toString() + " )   :", w.getWheel().getMotorOutputPercent());
+		}
+	}
+
+	//	public double[] getMotorOutputPercents() {
+//		double[] outputs = new double[4];
+//		outputs[0] = this.wheels[TalonSRXWheelEnum.backrightwheel.getWheel()].getMotorOutputPercent();
+//		outputs[1] = this.wheels[TalonSRXWheelEnum.frontrightwheel.getWheel()].getMotorOutputPercent();
+//		outputs[2] = this.wheels[TalonSRXWheelEnum.backleftwheel.getWheel()].getMotorOutputPercent();
+//		outputs[3] = this.wheels[TalonSRXWheelEnum.frontleftwheel.getWheel()].getMotorOutputPercent();
+//		return outputs;
+//	}
+//	
+//	public double[] getMotorOutputCurrents() {
+//		double[] outputs = new double[4];
+//		outputs[0] = this.wheels[TalonSRXWheelEnum.backrightwheel.getWheel()].getOutputCurrent();
+//		outputs[1] = this.wheels[TalonSRXWheelEnum.frontrightwheel.getWheel()].getOutputCurrent();
+//		outputs[2] = this.wheels[TalonSRXWheelEnum.backleftwheel.getWheel()].getOutputCurrent();
+//		outputs[3] = this.wheels[TalonSRXWheelEnum.frontleftwheel.getWheel()].getOutputCurrent();
+//		return outputs;
+//	}
+
+    
+    /*public void DriveMecanum(double speed) {
+        DriveMecanum(speed, speed);
+    }*/
+	}

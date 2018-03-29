@@ -21,9 +21,14 @@ public class Robot extends IterativeRobot {
 
 	public static final Drivetrain drivetrain = new Drivetrain();
 	public static OI m_oi;
+	
+	  public static int drivemode = 0; 
+
 
 	Command autonomousCommand;
 	SendableChooser<Command> chooser = new SendableChooser<>();
+	SendableChooser<String> drivetrainChooser= new SendableChooser<>(); 
+
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -34,6 +39,11 @@ public class Robot extends IterativeRobot {
 		m_oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
+		drivetrainChooser.addObject("Mecanum", "Mecanum"); 
+	    drivetrainChooser.addObject("Omni", "Omni"); 
+	    drivetrainChooser.addObject("Tank", "Tank"); 
+	 
+	    SmartDashboard.putData("Drivetrain", drivetrainChooser); 
 	}
 
 	/**
@@ -94,6 +104,16 @@ public class Robot extends IterativeRobot {
 		// this line or comment it out.
 		if (autonomousCommand != null)
 			autonomousCommand.cancel();
+		
+		if (drivetrainChooser.getSelected() == "Mecanum") { 
+	        drivemode = RobotMap.MecanumInt; 
+	      } 
+	      else if (drivetrainChooser.getSelected() == "Omni") { 
+	        drivemode = RobotMap.OmniInt; 
+	      } 
+	      else if (drivetrainChooser.getSelected() == "Tank") { 
+	        drivemode = RobotMap.TankInt; 
+	      } 
 	}
 
 	/**

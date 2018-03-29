@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 	public Joystick joystick;
+	public Joystick adjutantJoystick;
 	public AnalogGyro gyro;
 	public JoystickButton sampleButton;
 	public JoystickButton intakeButton;
@@ -19,6 +20,9 @@ public class OI {
 	public double getMagnitude() {  
 		return joystick.getMagnitude(); 
 		}
+	public double getMagnitudeadjutant() {
+		return adjutantJoystick.getMagnitude();
+	}
 	public double getTheta() { 
 		return joystick.getDirectionRadians(); 
 		}
@@ -34,5 +38,6 @@ public class OI {
 		super();
 		//instantiates joystick and intake button
 		this.joystick = new Joystick(RobotMap.driveStick);
+		this.adjutantJoystick = new Joystick(RobotMap.adjutantJoystick);
 	}
 }

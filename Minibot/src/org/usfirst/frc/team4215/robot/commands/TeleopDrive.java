@@ -1,6 +1,7 @@
 package org.usfirst.frc.team4215.robot.commands;
 
 import org.usfirst.frc.team4215.robot.Robot;
+import org.usfirst.frc.team4215.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -16,11 +17,20 @@ public class TeleopDrive extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	
+    		
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.drivetrain.Drive(Robot.m_oi.getMagnitude(), Robot.m_oi.getTheta(), Robot.m_oi.getRotation(), Robot.m_oi.getSlider());
+    	if (Robot.drivemode == RobotMap.OmniInt) {
+    		
+    	} else if(Robot.drivemode == RobotMap.MecanumInt) {
+        	Robot.drivetrain.DriveMecanum(Robot.m_oi.getMagnitude(), Robot.m_oi.getTheta(), Robot.m_oi.getRotation(), Robot.m_oi.getSlider());
+
+    	} else if(Robot.drivemode == RobotMap.TankInt) {
+    		Robot.drivetrain.DriveTank(Robot.m_oi.getMagnitude(), Robot.m_oi.getMagnitudeadjutant()); //TODO: Change the name here
+    	}
 
     }
 

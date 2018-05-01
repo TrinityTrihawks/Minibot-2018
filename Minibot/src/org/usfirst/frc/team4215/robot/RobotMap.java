@@ -24,8 +24,8 @@ public class RobotMap {
 	public final static int driveStick = 0; 
 	public final static int numberOfWheels = 4;
 
-	public final static int talonWheel_backright = 3;
-	public final static int talonWheel_frontright = 2;
+	public final static int talonWheel_backright = 2;
+	public final static int talonWheel_frontright = 3;
 	public final static int talonWheel_backleft = 1;
 	public final static int talonWheel_frontleft = 0;
 	

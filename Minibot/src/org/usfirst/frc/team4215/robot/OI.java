@@ -26,6 +26,9 @@ public class OI {
 	public double getTheta() { 
 		return joystick.getDirectionRadians(); 
 		}
+	public double getadjTheta() { 
+		return adjutantJoystick.getDirectionRadians(); 
+		}
 	public double getRotation() {
 		return joystick.getTwist(); 
 		}

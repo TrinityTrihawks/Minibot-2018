@@ -136,7 +136,7 @@ public void DriveMecanum(double magnitude, double theta, double rotation, double
 	public Drivetrain() {
 				
 		WheelType.frontleftwheel.getWheel().setInverted(true);
-		WheelType.frontrightwheel.getWheel().setInverted(true);		
+		WheelType.backleftwheel.getWheel().setInverted(true);		
 	}
 	
 	/**
@@ -171,12 +171,19 @@ public void DriveMecanum(double magnitude, double theta, double rotation, double
 		
 	}
 	
-	public void DriveTank(double magnitudeLeft, double magnitudeRight) {
+	public void DriveTank(double magnitudeLeft, double magnitudeRight, double theta, double adjtheta) {
 		//double magnitude = Math.abs(magnitudeLeft) + Math.abs(magnitudeRight);  // TODO: Make this less questionable
 		if (Math.abs(magnitudeLeft) <= .08 && Math.abs(magnitudeRight) <= .08) {
 			magnitudeLeft = 0;
 			magnitudeRight = 0;
 		}
+		
+		if (Math.abs(theta) > Math.PI/2) {
+		magnitudeRight *= -1;
+		}
+		if (Math.abs(adjtheta) > Math.PI/2) {
+			magnitudeLeft *= -1;
+			}
 		
 		// TODO: Add equalization between magnitudes when close together
 		

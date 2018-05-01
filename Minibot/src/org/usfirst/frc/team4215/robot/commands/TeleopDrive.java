@@ -29,7 +29,8 @@ public class TeleopDrive extends Command {
         	Robot.drivetrain.DriveMecanum(Robot.m_oi.getMagnitude(), Robot.m_oi.getTheta(), Robot.m_oi.getRotation(), Robot.m_oi.getSlider());
 
     	} else if(Robot.drivemode == RobotMap.TankInt) {
-    		Robot.drivetrain.DriveTank(Robot.m_oi.getMagnitude(), Robot.m_oi.getMagnitudeadjutant()); //TODO: Change the name here
+    		Robot.drivetrain.DriveTank(-1*Robot.m_oi.getMagnitude(), -1*Robot.m_oi.getMagnitudeadjutant(),
+    				Robot.m_oi.getTheta(), Robot.m_oi.getadjTheta()); //TODO: Change the name here
     	}
 
     }
